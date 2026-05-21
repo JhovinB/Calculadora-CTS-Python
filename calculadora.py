@@ -87,6 +87,10 @@ st.divider()
 col1, col2 = st.columns([1, 1], gap="large")
 
 # LÓGICA
+
+salario_minimo = 1130.00
+asig_familiar=salario_minimo*0.10
+
 ## Definimos las fechas
 CORTE_MAYO = date(2026, 4, 30)
 INICIO_MAYO = date(2025, 11, 1)
@@ -139,13 +143,15 @@ with col2:
         if sueldo <= 0:
             st.error("Por favor, ingresa un sueldo válido.")
         else:
-            asig_fam = 113.00 if hijos == "Sí" else 0
-            grati_sexto = sueldo / 6
-            base_computable = sueldo + asig_fam + grati_sexto
-            
-            monto_meses = (base_computable / 12) * meses_calc
-            monto_dias = (base_computable / 360) * dias_calc
-            total_cts = monto_meses + monto_dias
+            asig_fam = asig_familiar if hijos == "Sí" else 0
+            total = sueldo + asig_fam
+            monto_meses = (total / 12) 
+            monto_dias = (monto_meses / 30)
+ 
+            meses_calc = monto_meses * meses_calc
+            dias_calc =monto_dias * dias_calc
+            total_cts = meses_calc + dias_calc
+        
             
             st.markdown(f"""
                 <div class="result-card">
@@ -157,9 +163,9 @@ with col2:
             with st.expander("Ver desglose técnico", expanded=True):
                 st.write(f"**Sueldo Base:** S/. {sueldo:,.2f}")
                 st.write(f"**Asignación Familiar:** S/. {asig_fam:,.2f}")
-                st.write(f"**+ 1/6 Gratificación:** S/. {grati_sexto:,.2f}")
-                st.write(f"**Base Computable:** S/. {base_computable:,.2f}")
-                st.write(f"**Tiempo:** {meses_calc} meses y {dias_calc} días")
+                #st.write(f"**+ 1/6 Gratificación:** S/. {grati_sexto:,.2f}")
+                st.write(f"**Base Computable:** S/. {total:,.2f}")
+                #st.write(f"**Tiempo:** {meses_calc} meses y {dias_calc} días")
             
     else:
         st.info(f"Selecciona tus datos. Actualmente el sistema detecta el periodo de **{nombre_periodo}**.")
